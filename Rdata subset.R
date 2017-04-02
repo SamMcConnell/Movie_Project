@@ -1,6 +1,6 @@
-setwd("~/Documents/STAT306/Project Data")
+setwd(".")    # <--- trying to avoid direct path as we all have different setups
 #read data from unsorted csv file
-mydata = read.csv("movie_metadata 2.csv")
+mydata = read.csv("data/movie_metadata 2.csv")
 mydata
 # read data from csv file sorted by year
 newdata = read.csv("moviedata_sortedby_year.csv")

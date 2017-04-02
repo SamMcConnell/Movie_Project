@@ -1,11 +1,11 @@
-setwd("~/Documents/STAT306/Project/Movie_Project")
+setwd("~/Documents/Courses/STAT\ 306/Movie_Project")
 
 #install.packages('plyr')
 #install.packages("stringr", repos='http://cran.us.r-project.org')
 library(stringr)
 library(plyr)
 #read data from csv file sorted by year, with primary genres selected
-data = read.csv("moviedata_sortedby_year_split_genre.csv", colClasses=c("genres"="character"))
+data = read.csv("data/moviedata_sortedby_year_split_genre.csv", colClasses=c("genres"="character"))
 data
 
 typeof(data$genre)
@@ -90,6 +90,36 @@ d = gsub(".*(Action|Adventure|Animation|Biography|Comedy|Crime|Drama|Family|Fant
 d
 # may need to convert to factors?
 data["commonGenre"]
+
+# Create binary vector for each genre
+# Make vectors for:
+#   - Action, Adventure, Animation, Biography, Comedy, Crime, Drama, Family, Fantasy, History, Horror, Music, Musical, Mystery, Romance, Sci-fi, Thriller, War
+
+# Given a genre and a the genres of a movie, check if a movie contains it, if it does return 1, 0 otherwise
+hasGenre <- function(genre, movieGenres) {
+  regExp <- paste("(^|\\|)", genre, "(\\||$)", sep = "")
+  if(grepl(regExp, movieGenres)){
+    return(1)
+  } else {
+    return(0)
+  }
+}
+
+
+# Given a genre and a vector of the genres of various movies, produce a vector of TRUE/FALSE for movies that contain/don't contain the given genre
+moviesHaveGenre <- function(genre_, genreVector) {
+  return(sapply(genreVector, hasGenre, genre = genre_, USE.NAMES = FALSE))
+}
+
+commonGenres <- c("Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Drama", "Family", "Fantasy", "History", "Horror", "Music", "Musical", "Mystery", "Romance", "Sci-Fi", "Thriller", "War")
+
+# Given a genre, create vector of movies that have or do not have the genre (1|0), and cbind to the dataframe
+
+for (genre in commonGenres) {
+  gVector <- moviesHaveGenre(genre, data$genres)
+  data[genre] <- gVector
+}
+
 
 
 dataSubSetByColumns <- data[,c(2,3,4,9,11,12,14,23,24,27)]
