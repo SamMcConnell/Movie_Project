@@ -22,7 +22,7 @@ countAction = 0; countAdventure = 0; countAnimation = 0; countBiography = 0; cou
 countCrime = 0; countDocumentary = 0; countDrama = 0; countFamily = 0; 
 countFantasy = 0; countFilmNoir = 0; countGameShow = 0;
 countHistory = 0; countHorror = 0; countMusic = 0; countMusical = 0; countMystery = 0;
-countRomance = 0; countSciFi = 0; countThriller = 0; countWestern = 0;
+countRomance = 0; countSciFi = 0; countThriller = 0; countWestern = 0; countSport = 0; countNews = 0; countRealityTV = 0;
 
 for (i in genrevector ) {
   if (grepl(i, "Action")) 
@@ -69,38 +69,28 @@ for (i in genrevector ) {
     countWestern = countWestern +1;
   if (grepl(i, "War")) 
     countWar = countWar +1;
+  if (grepl(i, "Sport")) 
+    countSport = countSport +1;
+  if (grepl(i, "News")) 
+    countNews = countNews +1;
+  if (grepl(i, "Reality-TV")) 
+    countRealityTV = countRealityTV +1;
 }
 countAction; countAdventure; countAnimation; countBiography; countComedy ;
 countCrime ; countDocumentary ; countDrama ; countFamily ; 
 countFantasy ; countFilmNoir ; countGameShow ;
 countHistory ; countHorror ; countMusic ; countMusical ; countMystery ;
-countRomance ; countSciFi ; countThriller ; countWestern ; countWar;
+countRomance ; countSciFi ; countThriller ; countWestern ; countWar; countSport; countNews; countRealityTV;
 
-isCommon <- function(i) {
-  if ( (grepl(i, "Documentary")) || (grepl(i, "Film-Noir")) || (grepl(i, "Game-Show")) ||  (grepl(i, "Western")) ) { 
-    result <- "Uncommon"
-    return(result)
-  } else if ( (grepl(i, "Adventure")) || (grepl(i, "Action")) || (grepl(i, "Animation")) || (grepl(i, "Biography")) || (grepl(i, "Comedy")) ||
-              (grepl(i, "Crime")) || (grepl(i, "Documentary")) || (grepl(i, "Drama")) || (grepl(i, "Family")) || (grepl(i, "Fantasy")) ||
-              (grepl(i, "History")) || (grepl(i, "Horror")) || (grepl(i, "Music")) ||  (grepl(i, "Musical")) || (grepl(i, "Mystery")) ||
-              (grepl(i, "Romance")) || (grepl(i, "Sci-Fi")) || (grepl(i, "Thriller")) || (grepl(i, "War")) ) 
-    result <- "Common"
-    return result
-}
+#classify each movie genre as being common or uncommon using regex's
+options(max.print=99999)
+d = gsub(".*(Documentary|Film-Noir|Game-Show|Western).*", "Un-common", genrevector)
+d
+d = gsub(".*(Action|Adventure|Animation|Biography|Comedy|Crime|Drama|Family|Fantasy|History|Horror|Music|Musical|Mystery|Romance|Sci-Fi|Thriller|War).*", "Common", d)
+d
+# may need to convert to factors?
+data["commonGenre"]
 
-commonUncommon <- sapply(genrevector, isCommon)
-
-for (i in genrevector ) {
-  if ( (grepl(i, "Documentary")) || (grepl(i, "Film-Noir")) || (grepl(i, "Game-Show")) ||  (grepl(i, "Western")) ) { 
-    
-    } else if ( (grepl(i, "Adventure")) || (grepl(i, "Action")) || (grepl(i, "Animation")) || (grepl(i, "Biography")) || (grepl(i, "Comedy")) ||
-       (grepl(i, "Crime")) || (grepl(i, "Documentary")) || (grepl(i, "Drama")) || (grepl(i, "Family")) || (grepl(i, "Fantasy")) ||
-       (grepl(i, "History")) || (grepl(i, "Horror")) || (grepl(i, "Music")) ||  (grepl(i, "Musical")) || (grepl(i, "Mystery")) ||
-       (grepl(i, "Romance")) || (grepl(i, "Sci-Fi")) || (grepl(i, "Thriller")) || (grepl(i, "War")) ) {
-      
-    }
-       
-}
 
 dataSubSetByColumns <- data[,c(2,3,4,9,11,12,14,23,24,27)]
 summary(dataSubSetByColumns)
