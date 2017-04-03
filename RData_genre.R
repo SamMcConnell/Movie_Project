@@ -1,5 +1,7 @@
 setwd("~/Documents/Courses/STAT\ 306/Movie_Project")
 
+# summary statistics
+
 #install.packages('plyr')
 #install.packages("stringr", repos='http://cran.us.r-project.org')
 library(stringr)
@@ -12,7 +14,7 @@ typeof(data$genre)
 
 options(na.action=na.omit)
 count(data,"primary_genre")
-#produces frewuency tabl eoutput linke on page 110:
+#produces frequency table output linked on page 110:
 table(data$primary_genre)
 count(data$primary_genre)
 count(data,"content_rating")
