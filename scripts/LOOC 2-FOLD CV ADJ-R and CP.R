@@ -1,5 +1,7 @@
-dat2 <- read.csv("movies.csv")
-dat2 <- na.omit(dat2)
+data = read.csv("moviedata_sortedby_year.csv", colClasses=c("genres"="character"))
+directors <- subset(data, table(data$director_name)[data$director_name] >= 10)
+directors <- na.omit(directors)
+  
 directors$lngross <- log(directors$gross)
 directors$lndirector_facebook_likes <- log(directors$director_facebook_likes)
 directors$lnactor_1_facebook_likes <- log(directors$actor_1_facebook_likes)
@@ -8,15 +10,43 @@ directors$lncast_total_facebook_likes <- log(directors$cast_total_facebook_likes
 directors$lnbudget <- log(directors$budget)
 directors$lnnum_users_for_review <- log(directors$num_user_for_reviews)
 directors$lnmovie_facebook_likes <- log(directors$movie_facebook_likes)
-fit <- lm(lngross ~ lnnum_voted_users + lnnum_users_for_review + lnbudget + imdb_score + content_rating + director_name, data = directors)
-fitbackward <- regsubsets(lngross ~ lnnum_voted_users  + lnbudget + lnnum_users_for_review + lnbudget + imdb_score + content_rating + director_name, data = directors, method = "backward")
-fitforward <- regsubsets(lngross ~ lnnum_voted_users  + lnbudget + lnnum_users_for_review + lnbudget + imdb_score + content_rating + director_name, data = directors, method = "forward")
+
+# cleanup bad data
+directors$lnbudget[is.infinite(directors$lnbudget)] <- NA 
+directors$lnmovie_facebook_likes[is.infinite(directors$lnmovie_facebook_likes)] <- NA 
+directors$lngross[is.infinite(directors$lngross)] <- NA 
+directors$lnnum_voted_users[is.infinite(directors$lnnum_voted_users)] <- NA 
+directors$lncast_total_facebook_likes[is.infinite(directors$lncast_total_facebook_likes)] <- NA 
+directors$lndirector_facebook_likes[is.infinite(directors$lndirector_facebook_likes)] <- NA 
+directors$lncast_total_facebook_likes[is.infinite(directors$lncast_total_facebook_likes)] <- NA 
+directors$lnactor_1_facebook_likes[is.infinite(directors$lnactor_1_facebook_likes)] <- NA 
+
+directors$lnbudget[is.nan(directors$lnbudget)] <- NA 
+directors$lnmovie_facebook_likes[is.nan(directors$lnmovie_facebook_likes)] <- NA 
+directors$lngross[is.nan(directors$lngross)] <- NA 
+directors$lnnum_voted_users[is.nan(directors$lnnum_voted_users)] <- NA 
+directors$lncast_total_facebook_likes[is.nan(directors$lncast_total_facebook_likes)] <- NA 
+directors$lndirector_facebook_likes[is.nan(directors$lndirector_facebook_likes)] <- NA 
+directors$lncast_total_facebook_likes[is.nan(directors$lncast_total_facebook_likes)] <- NA 
+directors$lnactor_1_facebook_likes[is.nan(directors$lnactor_1_facebook_likes)] <- NA 
+
+# create regression model
+directors <- na.omit(directors)
+fit <- lm(lngross ~ actor_1_name + lncast_total_facebook_likes + lnactor_1_facebook_likes + lndirector_facebook_likes + lnnum_voted_users + lnnum_users_for_review + lnbudget + imdb_score + content_rating + director_name + Action + Adventure + Animation + Biography + Comedy + Crime + Drama + Family + Fantasy + History + Horror + Music + Musical + Mystery + Romance + Thriller + War, data = directors)
+
+# install leaps package and run backward/forward selection
+install.packages("leaps")
+library(leaps)
+
+# remove categorical variables as not compatible with variable selection algorithm
+fitbackward <- regsubsets(lngross ~ lncast_total_facebook_likes + lnactor_1_facebook_likes + lndirector_facebook_likes + lnnum_voted_users + lnnum_users_for_review + lnbudget + imdb_score + duration, data = directors, method = "backward")
+fitforward <- regsubsets(lngross ~ lncast_total_facebook_likes + lnactor_1_facebook_likes + lndirector_facebook_likes + lnnum_voted_users + lnnum_users_for_review + lnbudget + imdb_score + duration, data = directors, method = "backward")
 
 # this process can be automated below to get the appropriate statistics for comparison
 fitbackward$summary <- summary(fitbackward) # to find cp and adjr2
 fitforward$summary <- summary(fitforward) # to find cp and adjr2
-which.max(fitbackward$summary$adjr2) #model with max adjr2 value
-which.min(fitforward$summary$cp) #model with min adjr2 value
+maxadjr2fitbackward <- which.max(fitbackward$summary$adjr2) #model with max adjr2 value
+minfitforwardcp <- which.min(fitforward$summary$cp) #model with min cp value
 
 # calculate leave-one-out CV error
 ls.cvrmse <- function(ls.out)
@@ -33,18 +63,19 @@ ls.cvrmse <- function(ls.out)
   return(cvrmse)
 }
 
-# Compare the full model and best model found by regsubsets
-fit #full model
+# Compare the full model and best model found by regsubsets, categoricals removed
+fit <- lm(lngross ~ lncast_total_facebook_likes + lnactor_1_facebook_likes + lndirector_facebook_likes + lnnum_voted_users + lnnum_users_for_review + lnbudget + imdb_score + duration, data = directors)
+#full model
 
-fit2 <- fit2 <- lm(lngross ~ lnnum_voted_users  + lnbudget + imdb_score + content_rating + director_name, data = directors)
-# removed num_users_for_review, but usually you use your best model against your full model
+# remove director_facebook_likes and duration due to variable selection process, categoricals removed
+fit2 <- lm(lngross ~ lncast_total_facebook_likes + lnactor_1_facebook_likes + lnnum_voted_users + lnnum_users_for_review + lnbudget + imdb_score, data = directors)# removed num_users_for_review, but usually you use your best model against your full model
 # find best model using forward, backward or exhaustive methods
 summary(fit2)
 
-# Calculate the leave-one-out CV RMSE for the full model
+# Calculate the leave-one-out CV RMSE for the full model, categoricals removed
 fit.cvrmse <- ls.cvrmse(fit)
 
-# Calculate the leave-one-out CV RMSE for the best model via regsubsets
+# Calculate the leave-one-out CV RMSE for the best model via regsubsets, categoricals removed
 fit2.cvrmse <- ls.cvrmse(fit2)
 
 print(c(fit.cvrmse, fit2.cvrmse))
@@ -52,7 +83,7 @@ print(c(fit.cvrmse, fit2.cvrmse))
 # fit2 has a smaller cvrmse which is surprising as it has a smaller adj-R2.  But maybe it's due to the NaNs produced
 
 # Two-fold CV, using the Lab8 Technique
-n <- nrow(dat)
+n <- nrow(directors)
 set.seed(1)
 id.subset1 <- sort(sample(1:n, round(n/2), replace = FALSE))
 
