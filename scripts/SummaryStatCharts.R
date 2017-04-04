@@ -58,19 +58,21 @@ plot(dat$imdb_score, log(dat$gross), xlab = "Imdb Score", ylab = "log(Gross Reve
 par(mfrow=c(1,1))
 boxplot(dat$lngross ~ dat$gsubcontentrating, xlab = "Content Rating", ylab = "ln(Gross Revenue, USD)")
 
-#substet data frame for num_critic_reviews, duration, gross, num_voted_users, content_rating, budget, imdb_score
-dataSubSetByColumns <- dat[,c(3,4,9,14,23,24,27)]
-# print out summary
+#substet data frame for num_critic_reviews, duration, gross, num_voted_users, num_voted_users budget, imdb_score
+dataSubSetByColumns <- dat[,c(3,4,9,13,19,23,26,29,30,31)]
+dataSubSetByColumns
 summary(dataSubSetByColumns)
+# print out summary
 
 #substet data frame for num_critic_reviews, duration, gross, num_voted_users, budget, imdb_score
-datNumeric <- dat[,c(3,4,9,14,24,27)]
+datNumeric <- dat[,c(3,4,9,14,24)]
+datNumeric
 sumNumeric <- summary(datNumeric)
 sumNumeric
 
 #produces correlation matrix for all numerical data items that contain all items
 table(dat$gsubcontentrating)
-print(cor(datNumeric, use="complete.obs"))
+print(cor(dataSubSetByColumns, use="complete.obs"))
 
 #summary statistics for total data set, may want to get frequency tables in a nicer form
 summary(dat)
