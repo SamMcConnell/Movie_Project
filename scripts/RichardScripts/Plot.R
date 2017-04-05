@@ -1,6 +1,6 @@
 movie_actor<-na.omit(dat)
 #only picks movies data with main actor who shows up in more than 20 movies
-ac1<-subset(movie_actor, table(actor_1_name)[actor_1_name] >= 20)
+ac1<-subset(movie_actor, table(actor_1_name)[actor_1_name] >= 25)
 ac1<-na.omit(ac1)
 
 #take log for big data
