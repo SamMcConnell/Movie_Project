@@ -143,3 +143,24 @@ fitbest2<-lm(logadjgross ~duration +lognum_voted_users+num_critic_for_reviews+lo
 summary(fitbest2)
 ac2<-ac1[,c(3,4,26,48,49,50,51,52,53)]
 summary(ac2)
+
+# ~~~~~~~~~~~~~~~~~~~~~ SUMMARY OF ANALYSIS ~~~~~~~~~~~~~~~~~~~~~ #
+
+summaryfull #summary(fitfull)
+summarybest #summary(fitbest)
+SD1 #summaryfull$sigma
+SD2 #summarybest$sigma
+adj1 #summaryfull$adj.r.squared
+adj2 #summarybest$adj.r.squared
+
+cvrmsebest
+
+# calculate the error, training holdout
+fit.erra
+fit.errb
+
+fit.errc
+fit.errd
+
+fit.erre
+fit.errf
