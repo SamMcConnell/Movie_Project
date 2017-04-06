@@ -332,12 +332,12 @@ fit2.err1
 
 #first clean up the data
 library(readr)
-dat <- read_csv("movie_metadata.csv/moviedata_sortedby_year.csv")
+dat <- read_csv("moviedata_sortedby_year.csv")
 data<-dat[(dat$country=="USA"| dat$country=="UK" | dat$country=="Canada" | 
              dat$country=="New Zealand" | dat$country=="Australia" | dat$country=="Ireland" |
              (dat$country=="Germany" & dat$language=="English") | (dat$country=="France" & dat$language=="English") |
              (dat$country=="Italy" & dat$language=="English") | (dat$country=="Spain" & dat$language=="English")),]
-setwd(".")    # <--- trying to avoid direct path as we all have different setups
+#setwd(".")    # <--- trying to avoid direct path as we all have different setups
 #install.packages('plyr')
 #install.packages("stringr", repos='http://cran.us.r-project.org')
 library(stringr)
