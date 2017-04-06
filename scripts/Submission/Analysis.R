@@ -1,6 +1,6 @@
 #setwd("./Movie_Project")
-#install.packages("leaps")
-#library(leaps)
+install.packages("leaps")
+library(leaps)
 
 dat = read.csv("data/moviedata_sortedby_year_split_genre.csv", stringsAsFactors = FALSE)
 
