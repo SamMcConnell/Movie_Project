@@ -2,7 +2,7 @@
 install.packages("leaps")
 library(leaps)
 
-dat = read.csv("data/moviedata_sortedby_year_split_genre.csv", stringsAsFactors = FALSE)
+dat = read.csv("moviedata_sortedby_year.csv", stringsAsFactors = FALSE)
 
 # omit bad data with na.omit
 options(na.action=na.omit)
@@ -332,7 +332,7 @@ fit2.err1
 
 #first clean up the data
 library(readr)
-dat <- read_csv("~/R/movie_metadata.csv/moviedata_sortedby_year.csv")
+dat <- read_csv("movie_metadata.csv/moviedata_sortedby_year.csv")
 data<-dat[(dat$country=="USA"| dat$country=="UK" | dat$country=="Canada" | 
              dat$country=="New Zealand" | dat$country=="Australia" | dat$country=="Ireland" |
              (dat$country=="Germany" & dat$language=="English") | (dat$country=="France" & dat$language=="English") |
