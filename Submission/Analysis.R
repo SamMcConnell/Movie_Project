@@ -331,6 +331,7 @@ fit2.err1
 # ~~~~~~~~~~~~~~~~~~~~~ ACTOR'S ANALYSIS ~~~~~~~~~~~~~~~~~~~~~ #
 
 #first clean up the data
+install.packages("readr")
 library(readr)
 dat <- read_csv("moviedata_sortedby_year.csv")
 data<-dat[(dat$country=="USA"| dat$country=="UK" | dat$country=="Canada" | 
